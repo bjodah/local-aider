@@ -1,0 +1,72 @@
+logRequests: true
+
+
+# Qwen's QwQ 32B model is very sensitive to the settings used
+# the settings below are by no means definitive, and are taken
+# from unsloths official guide:
+#   https://docs.unsloth.ai/basics/tutorial-how-to-run-qwq-32b-effectively
+# and this discussion thread on reddit:
+#   https://www.reddit.com/r/LocalLLaMA/comments/1j5qo7q/comment/mgmz1rt/
+#
+# unfortunately litellm/aider do not seem to query the chat template,
+# the jinja template should already be part of the gguf, and therefore
+# not needed below. The current work around that actually has an effect
+# is seen in the file "host-litellm.py"
+
+models:
+  unsloth--QwQ-32B-GGUF:
+    cmd: >
+      /app/llama-server
+           --verbose
+           --port 8000
+           --ctx-size 32768 
+           --n-gpu-layers 99 
+           --seed "-1" 
+           --prio 2 
+           --temp 0.8 
+           --repeat-penalty 1.1 
+           --dry-multiplier 0.5 
+           --min-p 0.01 
+           --top-k 40 
+           --top-p 0.95 
+           --samplers "top_k;dry;top_p;min_p;temperature;typ_p;xtc" 
+           --dry-allowed-length 5
+           --cache-type-k q4_0 
+           --cache-type-v q4_0 
+           --flash-attn
+           --jinja
+           --chat-template "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- messages[0]['content'] }}\n    {%- else %}\n        {{- '' }}\n    {%- endif %}\n    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}\n  {%- endif %}\n{%- endif %}\n{%- for message in messages %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) %}\n        {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" and not message.tool_calls %}\n        {%- set content = message.content %}\n        {%- if not loop.last %}\n            {%- set content = message.content.split('</think>')[-1].lstrip('\\n') %}\n        {%- endif %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set content = message.content %}\n        {%- if not loop.last %}\n            {%- set content = message.content.split('</think>')[-1].lstrip('\\n') %}\n        {%- endif %}\n        {{- '<|im_start|>' + message.role }}\n        {%- if message.content %}\n            {{- '\\n' + content }}\n        {%- endif %}\n        {%- for tool_call in message.tool_calls %}\n            {%- if tool_call.function is defined %}\n                {%- set tool_call = tool_call.function %}\n            {%- endif %}\n            {{- '\\n<tool_call>\\n{\"name\": \"' }}\n            {{- tool_call.name }}\n            {{- '\", \"arguments\": ' }}\n            {{- tool_call.arguments | tojson }}\n            {{- '}\\n</tool_call>' }}\n        {%- endfor %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- message.content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n<think>\\n' }}\n{%- endif %}\n"
+           -hf unsloth/QwQ-32B-GGUF:Q4_K_M
+    proxy: http://127.0.0.1:8000
+
+           # --jinja
+           # --chat-template "$(cat $HOME/vc/castle/ai/unsloth-qwq-32b-chat-template-jinja.txt)"
+
+    # unload model after XX seconds
+    ttl: 60
+
+  unsloth--Qwen2.5-Coder-32B-Instruct-GGUF:
+    cmd: >
+      /app/llama-server
+           --verbose
+           --port 8000
+           --threads 32 
+           --ctx-size 32768 
+           --n-gpu-layers 999 
+           --seed "-1" 
+           --temp 0.3
+           --repeat-penalty 1.1 
+           --dry-multiplier 0.5 
+           --min-p 0.01 
+           --top-k 40 
+           --top-p 0.95 
+           --samplers "top_k;top_p;min_p;temperature;dry;typ_p;xtc" 
+           --cache-type-k q4_0 
+           --cache-type-v q4_0 
+           --flash-attn
+           -hf unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
+
+    proxy: http://127.0.0.1:8000
+
+    # unload model after XX seconds
+    ttl: 60

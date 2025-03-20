@@ -1,0 +1,16 @@
+model_list:
+  - model_name: "local-qwq-32b"  # "huggingface/unsloth/QwQ-32B-GGUF"
+    litellm_params:
+      model: "openai/unsloth--QwQ-32B-GGUF" #openai/QwQ-32B
+      api_base: http://localhost:8686/v1
+      api_key: "your-llamacpp-api-key"   # if --api-key flag is passed to LLaMA.cpp's HTTP Server
+      rpm: 60
+  - model_name: "local-qwen25-coder-32b" # "huggingface/unsloth/Qwen2.5-Coder-32B-Instruct-GGUF"
+    litellm_params:
+      model: "openai/unsloth--Qwen2.5-Coder-32B-Instruct-GGUF"  #openai/Qwen2.5-Coder-32B
+      api_base: http://localhost:8686/v1
+      api_key: "your-llamacpp-api-key"   # if --api-key flag is passed to LLaMA.cpp's HTTP Server
+      rpm: 600
+
+general_settings:
+  master_key: sk-deadbeef0badcafe
