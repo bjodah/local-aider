@@ -1,34 +1,38 @@
 version: "3.9"
 services:
 
-  llama-cpp-swap:
+  pod-llama-cpp-swap:
     build:
       context: env-llama-cpp-swap/
       dockerfile: Containerfile
     ports:
       - "8686:8686"
     devices:
-      - "/dev/nvidia0:/dev/nvidia0"
-      - "/dev/nvidiactl:/dev/nvidiactl"
+      - "nvidia.com/gpu=all"
     volumes:
-      - ${HOST_CACHE_HUGGINGFACE:-$HOME/.cache/huggingface}:/root/.cache/huggingface
-      - ${HOST_CACHE_LLAMACPP:-$HOME/.cache/llama.cpp}:/root/.cache/llama.cpp
-      - ../config-llamacpp-container.yaml:/root/llama-swap-config.yaml
+      - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}:/root/.cache/huggingface
+      - ${HOST_CACHE_LLAMACPP:-~/.cache/llama.cpp}:/root/.cache/llama.cpp
+      - ./config-llamacpp-container.yaml:/root/llama-swap-config.yaml
     security_opt:
       - label:disable
     environment:
+      - NVIDIA_VISIBLE_DEVICES=all
       - HUGGING_FACE_HUB_TOKEN
     ipc: host
+    # workdir:
+    #   /app
     entrypoint:
       /usr/local/bin/llama-swap
     command:
       -config /root/llama-swap-config.yaml -listen ':8686'
 
-  litellm-proxy:
+  pod-litellm-proxy:
     build:
       context: env-litellm-patched/
       dockerfile: Containerfile
     ports:
       - "4000:4000"
+    volumes:
+      - ./litellm.yml:/root/litellm.yml
     command:
       host-litellm.py --config /root/litellm.yml --detailed_debug

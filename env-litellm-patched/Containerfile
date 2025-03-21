@@ -4,7 +4,7 @@ RUN apt-get update --quiet \
     && apt-get install git \
     && git clone --branch handle-custom_prompt_dict-openai https://github.com/bjodah/litellm /litellm-patched \
     && python -m venv /opt/venv \
-    && bash -c "source /app/venv/bin/activate; pip install uv && uv pip install -r /app/requirements.txt"
+    && bash -c "set -e; source /opt/venv/bin/activate; pip install uv && uv pip install -r /litellm-patched/requirements.txt"
 
 COPY host-litellm.py /opt/venv/bin
 COPY entrypoint.sh /opt

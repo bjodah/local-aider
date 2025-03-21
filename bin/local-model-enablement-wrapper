@@ -1,5 +1,5 @@
 #!/bin/bash
-set -uxo pipefail
+set -u
 
 repo_root="$(cd $(dirname $(realpath "$BASH_SOURCE")); git rev-parse --show-toplevel 2>/dev/null)"
 
@@ -7,11 +7,20 @@ repo_root="$(cd $(dirname $(realpath "$BASH_SOURCE")); git rev-parse --show-topl
 export LITELLM_PROXY_API_KEY=$(grep master_key "$repo_root"/litellm.yml | cut -d: -f2 | tr -d ' \t')
 export LITELLM_PROXY_API_BASE="http://localhost:4000"
 
-if ! curl --location $LITELLM_PROXY_API_BASE/health -H "Authorization: Bearer $LITELLM_PROXY_API_KEY"; then
+health_check() {
+    health_status=$(curl -s --location $LITELLM_PROXY_API_BASE/health -H "Authorization: Bearer $LITELLM_PROXY_API_KEY")
+    unhealthy_count=$(echo $health_status | jq '.unhealthy_count')
+    if [[ $unhealthy_count -ne 0 ]]; then
+        >&2 echo $health_status | jq .
+    fi
+    echo $unhealthy_count
+}
+
+if ! curl -s $LITELLM_PROXY_API_BASE 2>&1 >/dev/null; then
     # we need to spin up the compose file
     
-    if [ ! -e "$repo_root"/compose.yaml ]; then
-        >&2 echo "$BASH_SOURCE:$BASH_LINENO: Could not find the compose.yaml file in: $repo_root"
+    if [ ! -e "$repo_root"/compose.yml ]; then
+        >&2 echo "$BASH_SOURCE:$BASH_LINENO: Could not find the compose.yml file in: $repo_root"
         exit 1
     fi
     if which podman 2>&1 >/dev/null; then
@@ -26,14 +35,15 @@ if ! curl --location $LITELLM_PROXY_API_BASE/health -H "Authorization: Bearer $L
     else
         COMPOSE_CMD="docker-compose"
     fi
-    set -e
     env \
         HOST_CACHE_HUGGINGFACE="$(realpath $HOME/.cache/huggingface)" \
         HOST_CACHE_LLAMACPP="$(realpath $HOME/.cache/llama.cpp)" \
-        $COMPOSE_CMD --file compose.yaml up --detach
-
-    # TODO; status check with sleep cmd in loop?
-else
-    set -e    
+        $COMPOSE_CMD --file "$repo_root"/compose.yml up --detach
 fi
+
+if [[ $(health_check) -ne 0 ]]; then
+    >&2 echo "litellm proxy service are not reporting our models as operational, exiting"
+    exit 1
+fi
+
 "$@"
