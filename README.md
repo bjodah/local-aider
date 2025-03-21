@@ -45,10 +45,11 @@ grep -E '(logRequests|detailed_debug)' -R .
   unfortunately changes the request format to that of huggingface's
   API which is not OpenAI compatible (as far as I can
   tell). Workaround: I use a patched litellm (from the PR) for now.
+  
 
 ## TODOs
-- Aider currently does not detect max context size
-- litellm proxy does not seem to propagate request interruption
+- [ ] Aider currently does not detect max context size
+- [ ] litellm proxy does not seem to propagate request interruption
 
 # Demo
 TODO: asciinema goes here.
