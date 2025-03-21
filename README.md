@@ -2,7 +2,11 @@
 This repo is just an attempt to collect scripts and notes on how one
 can enable using [aider](https://aider.chat) with a local reasoning "architect" model (Qwen/QwQ-32B)
 and a non-reasoning "editor" model (Qwen/Qwen2.5-Coder-Instruct-32B)
-on a single consumer grade GPU (tested on RTX 3090)
+on a single consumer grade GPU (tested on RTX 3090).
+
+I should mention that the simplest solution is probably to use the [Ollama support in
+aider](https://aider.chat/docs/llms/ollama.html), the approach here however, allows you (in
+principle) to experiment with different backends (such as [vllm](https://github.com/vllm-project/vllm), [Exllamav2+tabbyAPI](https://github.com/theroyallab/tabbyAPI), ...).
 
 
 ## Usage
