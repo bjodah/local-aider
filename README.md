@@ -52,4 +52,4 @@ grep -E '(logRequests|detailed_debug)' -R .
 - [ ] litellm proxy does not seem to propagate request interruption
 
 # Demo
-TODO: asciinema goes here.
+[![asciicast](demo.gif)](https://asciinema.org/a/Rm1PSQHtEEtEIyhKOsO2KbcYX)
