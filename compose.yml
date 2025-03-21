@@ -19,8 +19,6 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - HUGGING_FACE_HUB_TOKEN
     ipc: host
-    # workdir:
-    #   /app
     entrypoint:
       /usr/local/bin/llama-swap
     command:
