@@ -46,7 +46,7 @@ if ! curl -s $LITELLM_PROXY_API_BASE 2>&1 >/dev/null; then
 fi
 
 if [[ $(health_check) -ne 0 ]]; then
-    >&2 echo "litellm proxy service are not reporting our models as operational, exiting"
+    >&2 echo "litellm proxy services are not reporting our models as operational, exiting"
     exit 1
 fi
 
