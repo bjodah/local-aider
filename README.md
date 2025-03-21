@@ -1,3 +1,9 @@
+# branch <fuseo1-r1-qwq-skyt1-32b>
+This branch modifies aims to evaluate a model from FuseAI, the inspiration is from [a comment one
+reddit](https://www.reddit.com/r/LocalLLaMA/comments/1jgau52/comment/miyk41q/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+by user ratbastid2000.
+
+
 # local-aider
 This repo is just an attempt to collect scripts and notes on how one
 can enable using [aider](https://aider.chat) with a local reasoning "architect" model (Qwen/QwQ-32B)
@@ -16,8 +22,8 @@ $ cd brainstorming-repo
 $ git init .
 $ ./bin/local-model-enablement-wrapper \
     aider \
-        --architect --model litellm_proxy/local-qwq-32b \
-        --editor-model litellm_proxy/local-qwen25-coder-32b
+        --model litellm_proxy/local-fuseo1
+        
 ```
 <details>
 <summary>A less "magical" approach would be to launch the compose file manually.</summary>

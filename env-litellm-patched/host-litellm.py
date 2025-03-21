@@ -21,7 +21,19 @@ def main():
             },
         }
     )
-    print(f"{litellm.custom_prompt_dict=}") # Spurious debug print statement, TODO: remove this.
+    litellm.register_prompt_template(
+        model='openai/bartowski--fuseo1',
+        roles={
+            "system": {
+                "pre_message": "<｜begin▁of▁sentence｜>"
+            }
+            "user": {
+                "pre_message": "<｜User｜>",
+                "post_message": "<｜Assistant｜><｜end▁of▁sentence｜><｜Assistant｜>"
+            },
+        }
+    )
+    #print(f"{litellm.custom_prompt_dict=}") # Spurious debug print statement, TODO: remove this.
     sys.exit(litellm.run_server())
 
 if __name__ == '__main__':

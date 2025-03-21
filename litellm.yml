@@ -11,6 +11,13 @@ model_list:
       api_base: http://pod-llama-cpp-swap:8686/v1
       api_key: "your-llamacpp-api-key"   # if --api-key flag is passed to LLaMA.cpp's HTTP Server
       rpm: 600
+  - model_name: "local-fuseo1"  # "huggingface/unsloth/QwQ-32B-GGUF"
+    litellm_params:
+      model: "openai/bartowski--fuseo1"
+      api_base: http://pod-llama-cpp-swap:8686/v1
+      api_key: "your-llamacpp-api-key"
+      rpm: 60
+
 
 general_settings:
   master_key: sk-deadbeef0badcafe

@@ -49,7 +49,7 @@ models:
     # unload model after XX seconds
     ttl: 60
 
-  unsloth--Qwen2.5-Coder-32B-Instruct-GGUF:
+  bartowski--fuseo1:
     cmd: >
       /app/llama-server
            --verbose
@@ -68,7 +68,7 @@ models:
            --cache-type-k q4_0 
            --cache-type-v q4_0 
            --flash-attn
-           -hf unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
+           -hf bartowski/FuseO1-DeepSeekR1-QwQ-SkyT1-32B-Preview-GGUF:Q4_K_L
 
     proxy: http://127.0.0.1:8000
 
