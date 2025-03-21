@@ -35,4 +35,4 @@ services:
     volumes:
       - ./litellm.yml:/root/litellm.yml
     command:
-      host-litellm.py --config /root/litellm.yml --detailed_debug
+      host-litellm.py --config /root/litellm.yml # --detailed_debug

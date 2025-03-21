@@ -1,5 +1,4 @@
-logRequests: true
-
+logRequests: false
 
 # Qwen's QwQ 32B model is very sensitive to the settings used
 # the settings below are by no means definitive, and are taken
@@ -12,6 +11,11 @@ logRequests: true
 # the jinja template should already be part of the gguf, and therefore
 # not needed below. The current work around that actually has an effect
 # is seen in the file "host-litellm.py"
+
+# supposedly quantizing k-cache has more severe quality degradation than
+# quantizing v-cache (see https://github.com/ggml-org/llama.cpp/pull/7412),
+# unfortunately I run out of memory when trying to use q8_0
+
 
 models:
   unsloth--QwQ-32B-GGUF:
