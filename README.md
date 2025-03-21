@@ -75,7 +75,7 @@ grep -E '(logRequests|detailed_debug)' -R .
 
 ## TODOs
 - [ ] the prompt template might not be working quite right, looking at the logs, and responses, \n\n
-      might not be correctly escaped, I see occurences of "nn" and "nnnn"
+      might not be correctly escaped, I see occurrences of "nn" and "nnnn"
 - [ ] litellm proxy does not seem to propagate request interruption
 
 # Demo
