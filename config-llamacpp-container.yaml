@@ -19,7 +19,7 @@ models:
       /app/llama-server
            --verbose
            --port 8000
-           --ctx-size 32768 
+           --ctx-size 32768
            --n-gpu-layers 99 
            --seed "-1" 
            --prio 2 

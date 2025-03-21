@@ -45,17 +45,33 @@ grep -E '(logRequests|detailed_debug)' -R .
   unfortunately changes the request format to that of huggingface's
   API which is not OpenAI compatible (as far as I can
   tell). Workaround: I use a patched litellm (from the PR) for now.
-  
+-   
 
 ## TODOs
-- [ ] Aider currently does not detect max context size
+- [ ] the prompt template might not be working quite right, looking at
+      the logs, and responses, \n\n might not be correctly escaped, I
+      see occurences of "nn" and "nnnn"
 - [ ] litellm proxy does not seem to propagate request interruption
-- [ ] currently the [health-check query](https://github.com/bjodah/local-aider/blob/2e5a510bb291aa0fcbbc473d14ed632210c6dde6/bin/local-model-enablement-wrapper#L44) in the wrapper-script give
-      some delay when launching the script, those lines can be
-      commented out.
 
 # Demo
 [![asciicast](demo.gif)](https://asciinema.org/a/Rm1PSQHtEEtEIyhKOsO2KbcYX)
 or view the full cast using asciinema player
 [here](https://asciinema.org/a/Rm1PSQHtEEtEIyhKOsO2KbcYX).
 
+# Miscellaneous
+- Aider needs to be [informed about context window
+  size](https://aider.chat/docs/config/adv-model-settings.html#context-window-size-and-token-costs),
+  you may copy/append `.aider.model.metadata.json` to your $HOME
+  directory (or the root of you git repo in which you intend to run aider).
+- The health-check query, in the wrapper-script give some delay when
+  launching the script, set LOCAL_AIDER_SKIP_HEALTH_CHECK=1 to skip it.
+- Best practice is to run aider in a sand-boxed environment (executing
+  LLM generated code is risky). We can replace the aider call with e.g
+  "podman run ..." or "docker run ...". At this point, an alias might
+  come in handy:
+```console
+$ grep aider-local-qwq32 ~/.bashrc
+alias aider-local-qwq32="env LOCAL_AIDER_SKIP_HEALTH_CHECK=1 local-model-enablement-wrapper contaider --architect --model litellm_proxy/local-qwq-32b --editor-model litellm_proxy/local-qwen25-coder-32b"
+```
+  this alias uses a utility script to launch aider in a container
+  ([contaider](https://github.com/bjodah/contaider)).
