@@ -50,6 +50,9 @@ grep -E '(logRequests|detailed_debug)' -R .
 ## TODOs
 - [ ] Aider currently does not detect max context size
 - [ ] litellm proxy does not seem to propagate request interruption
+- [ ] currently the [health-check query](https://github.com/bjodah/local-aider/blob/2e5a510bb291aa0fcbbc473d14ed632210c6dde6/bin/local-model-enablement-wrapper#L44) in the wrapper-script give
+      some delay when launching the script, those lines can be
+      commented out.
 
 # Demo
 [![asciicast](demo.gif)](https://asciinema.org/a/Rm1PSQHtEEtEIyhKOsO2KbcYX)
