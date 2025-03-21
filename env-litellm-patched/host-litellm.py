@@ -7,8 +7,8 @@ def main():
         model='openai/unsloth--QwQ-32B-GGUF',
         roles={
             "user": {
-                "pre_message": "user\n",
-                "post_message": "\nassistant\n<think>"
+                "pre_message": "<|im_start|>user\n",
+                "post_message": "<|im_end|>\n<|im_start|>assistant\n<think>"
             },
         }
     )
@@ -16,8 +16,8 @@ def main():
         model='openai/unsloth--Qwen2.5-Coder-32B-Instruct-GGUF',
         roles={
             "user": {
-                "pre_message": "user\n",
-                "post_message": "\n"
+                "pre_message": "<|im_start|>user\n",
+                "post_message": "<|im_end|>\n"
             },
         }
     )

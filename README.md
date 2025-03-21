@@ -56,7 +56,7 @@ grep -E '(logRequests|detailed_debug)' -R .
 ```
 
 ## Challenges
-- The 32B parameter models fit in 24GB vRAM, but only one at a time, solution:
+- The 32B parameter models fit in 24GB VRAM, but only one at a time, solution:
   [llama-swap](https://github.com/mostlygeek/llama-swap)
 - The easiest way to run the models is using llama.cpp's Docker image. But llama-swap has a problem
   stopping the container when unloading a model, solution: run llama-swap
