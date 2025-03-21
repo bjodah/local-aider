@@ -53,3 +53,6 @@ grep -E '(logRequests|detailed_debug)' -R .
 
 # Demo
 [![asciicast](demo.gif)](https://asciinema.org/a/Rm1PSQHtEEtEIyhKOsO2KbcYX)
+or view the full cast using asciinema player
+[here](https://asciinema.org/a/Rm1PSQHtEEtEIyhKOsO2KbcYX).
+
