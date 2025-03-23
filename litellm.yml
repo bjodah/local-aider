@@ -11,6 +11,18 @@ model_list:
       api_base: http://pod-llama-cpp-swap:8686/v1
       api_key: "your-llamacpp-api-key"   # if --api-key flag is passed to LLaMA.cpp's HTTP Server
       rpm: 600
+  - model_name: "local-tabby-qwq-32b"
+    litellm_params:
+      model: "openai/tabby-qwq-32b"
+      api_base: http://pod-tabbyapi:5000/v1
+      api_key: "your-tabby-api-key"
+      rpm: 60
+  - model_name: "local-tabby-qwq-32b-editor"
+    litellm_params:
+      model: "openai/tabby-qwq-32b-editor"
+      api_base: http://pod-tabbyapi:5000/v1
+      api_key: "your-tabby-api-key"
+      rpm: 600
 
 general_settings:
   master_key: sk-deadbeef0badcafe

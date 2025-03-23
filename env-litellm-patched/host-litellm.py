@@ -8,7 +8,7 @@ def main():
         roles={
             "user": {
                 "pre_message": "<|im_start|>user\n",
-                "post_message": "<|im_end|>\n<|im_start|>assistant\n<think>"
+                "post_message": "<|im_end|>\n<|im_start|>assistant\n<think>\n"
             },
         }
     )
@@ -21,7 +21,24 @@ def main():
             },
         }
     )
-    print(f"{litellm.custom_prompt_dict=}") # Spurious debug print statement, TODO: remove this.
+    litellm.register_prompt_template(
+        model='openai/tabby-qwq-32b',
+        roles={
+            "user": {
+                "pre_message": "<|im_start|>user\n",
+                "post_message": "<|im_end|>\n<|im_start|>assistant\n<think>\n"
+            },
+        }
+    )
+    litellm.register_prompt_template(
+        model='openai/tabby-qwq-32b-editor',
+        roles={
+            "user": {
+                "pre_message": "<|im_start|>user\n",
+                "post_message": "<|im_end|>\n<|im_start|>assistant\n<think>\n</think>\n"
+            },
+        }
+    )
     sys.exit(litellm.run_server())
 
 if __name__ == '__main__':
