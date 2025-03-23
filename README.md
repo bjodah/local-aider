@@ -24,7 +24,7 @@ $ ./bin/local-model-enablement-wrapper \
 
 In one terminal:
 ```console
-$ podman compose up
+$ podman compose up --build --force-recreate
 [pod-llama-cpp-swap] | llama-swap listening on :8686
 [pod-litellm-proxy]  | INFO:     Started server process [1]
 [pod-litellm-proxy]  | INFO:     Waiting for application startup.
@@ -89,13 +89,31 @@ or view the full cast using asciinema player
   you may copy/append `.aider.model.metadata.json` to your $HOME directory (or the root of your git
   repo in which you intend to run aider).
 - The health-check query, in the wrapper-script gives some delay when launching the script, set
-  LOCAL_AIDER_SKIP_HEALTH_CHECK=1 to skip it.
+  LOCAL_AIDER_USE_HEALTH_CHECK=1 to opt-in to its use.
 - Best practice is to run aider in a sandboxed environment (executing LLM generated code is
   risky). We can replace the aider call with e.g "podman run ..." or "docker run ...". At this
   point, an alias might come in handy:
 ```console
 $ grep aider-local-qwq32 ~/.bashrc
-alias aider-local-qwq32="env LOCAL_AIDER_SKIP_HEALTH_CHECK=1 local-model-enablement-wrapper contaider --architect --model litellm_proxy/local-qwq-32b --editor-model litellm_proxy/local-qwen25-coder-32b"
+alias aider-local-qwq32="env local-model-enablement-wrapper contaider --architect --model litellm_proxy/local-qwq-32b --editor-model litellm_proxy/local-qwen25-coder-32b"
 ```
   this alias uses a utility script to launch aider in a container
   ([contaider](https://github.com/bjodah/contaider)).
+- [ ] we could perhaps use "python -m exllamav2.server --model ... --top-k ..." etc with llama-swap
+      [like this](https://www.reddit.com/r/LocalLLaMA/comments/1gzm93o/comment/lz1mvrf/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+      ```
+models:
+  "qwen-coder-32b-exl2":
+    env:
+      - "CUDA_VISIBLE_DEVICES=0"
+    cmd: >
+      python -m exllamav2.server
+      --model /path/to/Qwen2.5-Coder-32B-exl2_4.0bpw
+      --port 9503
+      --context-length 32000
+      --temperature 0.1
+      --top-k 50
+      --top-p 0.9
+    proxy: "http://127.0.0.1:9503"
+      ```
+  Better than tabbyAPI configured with litellm.yml? I don't know.

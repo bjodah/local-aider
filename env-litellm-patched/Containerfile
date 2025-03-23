@@ -6,7 +6,6 @@ RUN apt-get update --quiet \
     && python -m venv /opt/venv \
     && bash -c "set -e; source /opt/venv/bin/activate; pip install uv && uv pip install -r /litellm-patched/requirements.txt"
 
-COPY host-litellm.py /opt/venv/bin
 COPY entrypoint.sh /opt
 
 ENTRYPOINT ["/opt/entrypoint.sh"]
