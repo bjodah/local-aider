@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ ! -v LITELLM_PROXY_API_KEY || ! -v LITELLM_PROXY_API_BASE ]]; then
-    >&2 echo "Run this scripts like this:"
+    >&2 echo "Run this script like this:"
     >&2 echo "  $ ./bin/local-model-enablement-wrapper ./scripts/test-litellm-proxy.sh"
     exit 1
 fi
@@ -24,5 +24,4 @@ set -x
 # to infinite recursion. You can test this by either:
 #   - editing ../env-litellm-patched/host-litellm.py
 #   - or, change the endpoint to point directly at llama-swap (port 8686)
-query "local-qwq-32b" "Answer succintly by completing the sentence: The capital of France is"
-
+query "local-qwq-32b" "Answer succinctly by completing the sentence: The capital of France is"
