@@ -19,8 +19,8 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - HUGGING_FACE_HUB_TOKEN
     ipc: host
-    entrypoint:
-      /usr/local/bin/llama-swap
+    entrypoint: ["echo", "Service temporarily disabled"]
+#      /usr/local/bin/llama-swap
     command:
       -config /root/llama-swap-config.yaml -listen ':8686'
 

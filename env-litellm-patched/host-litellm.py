@@ -22,7 +22,7 @@ def main():
         }
     )
     litellm.register_prompt_template(
-        model='openai/tabby-qwq-32b',
+        model='openai/tabby-qwq-32b-architect',
         roles={
             "user": {
                 "pre_message": "<|im_start|>user\n",
