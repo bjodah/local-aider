@@ -1,9 +1,9 @@
 version: "3.9"
 services:
 
-  pod-llama-cpp-swap:
+  pod-llama-swap:
     build:
-      context: env-llama-cpp-swap/
+      context: env-llama-swap/
       dockerfile: Containerfile
     ports:
       - "8686:8686"
@@ -11,34 +11,23 @@ services:
       - "nvidia.com/gpu=all"
     volumes:
       - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}:/root/.cache/huggingface
+      - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface}/hub:/models  # tabbyAPI...
       - ${HOST_CACHE_LLAMACPP:-~/.cache/llama.cpp}:/root/.cache/llama.cpp
-      - ./config-llamacpp-container.yaml:/root/llama-swap-config.yaml
+      - ./llama-swap-config.yaml:/root/llama-swap-config.yaml
+      - ./tabby-api_tokens.yml:/api_tokens.yml
+      - ./tabby-config-qwq32b.yml:/opt/tabby-config-qwq32b.yml
+      - ./tabby-config-qwen25-coder.yml:/opt/tabby-config-qwen25-coder.yml
+    working_dir: "/"      
     security_opt:
       - label:disable
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - HUGGING_FACE_HUB_TOKEN
     ipc: host
-    entrypoint: ["echo", "Service temporarily disabled"]
-#      /usr/local/bin/llama-swap
+    entrypoint:
+      /usr/local/bin/llama-swap
     command:
       -config /root/llama-swap-config.yaml -listen ':8686'
-
-  pod-tabbyapi:
-    image: ghcr.io/theroyallab/tabbyapi:latest
-    ports:
-      - "5000:5000"
-    devices:
-      - "nvidia.com/gpu=all"
-    volumes:
-      - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface/hub}:/app/models
-      - ./tabby-api_tokens.yml:/app/api_tokens.yml
-      - ./tabby-config-qwq32b.yml:/app/config.yml
-    security_opt:
-      - label:disable
-    environment:
-      - NAME=TabbyAPI
-    ipc: host   
 
   pod-litellm-proxy:
     build:
@@ -48,5 +37,8 @@ services:
       - "4000:4000"
     volumes:
       - ./litellm.yml:/root/litellm.yml
+      - ./host-litellm.py:/root/host-litellm.py
     command:
-      host-litellm.py --config /root/litellm.yml # --detailed_debug
+      /root/host-litellm.py --config /root/litellm.yml # --detailed_debug
+    depends_on:
+      - pod-llama-swap

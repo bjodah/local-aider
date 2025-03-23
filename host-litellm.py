@@ -4,7 +4,7 @@ import sys
 
 def main():
     litellm.register_prompt_template(
-        model='openai/unsloth--QwQ-32B-GGUF',
+        model='openai/cpp-unsloth--QwQ-32B-GGUF',
         roles={
             "user": {
                 "pre_message": "<|im_start|>user\n",
@@ -13,7 +13,7 @@ def main():
         }
     )
     litellm.register_prompt_template(
-        model='openai/unsloth--Qwen2.5-Coder-32B-Instruct-GGUF',
+        model='openai/cpp-unsloth--Qwen2.5-Coder-32B-Instruct-GGUF',
         roles={
             "user": {
                 "pre_message": "<|im_start|>user\n",
@@ -22,7 +22,7 @@ def main():
         }
     )
     litellm.register_prompt_template(
-        model='openai/tabby-qwq-32b-architect',
+        model='openai/exllamav2-bartowski-qwq-32b',
         roles={
             "user": {
                 "pre_message": "<|im_start|>user\n",
@@ -31,7 +31,7 @@ def main():
         }
     )
     litellm.register_prompt_template(
-        model='openai/tabby-qwq-32b-editor',
+        model='openai/exllamav2-bartowski-qwen25-coder-32b',
         roles={
             "user": {
                 "pre_message": "<|im_start|>user\n",
@@ -39,6 +39,7 @@ def main():
             },
         }
     )
+    print(f"{litellm.custom_prompt_dict=}") # debug print statement, can safely be removed.
     sys.exit(litellm.run_server())
 
 if __name__ == '__main__':

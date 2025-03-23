@@ -8,7 +8,7 @@ export LITELLM_PROXY_API_KEY=$(grep master_key "$repo_root"/litellm.yml | cut -d
 export LITELLM_PROXY_API_BASE="http://localhost:4000"
 
 health_check() {
-    if [[ "${LOCAL_AIDER_SKIP_HEALTH_CHECK:-0}" -eq 1 ]]; then
+    if [[ "${LOCAL_AIDER_USE_HEALTH_CHECK:-0}" -eq 0 ]]; then
         echo 0
         return
     fi
