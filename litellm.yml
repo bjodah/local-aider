@@ -5,13 +5,15 @@ model_list:
       api_base: http://pod-llama-swap:8686/v1
       api_key: "your-llamacpp-api-key"   # if --api-key flag is passed to LLaMA.cpp's HTTP Server
       rpm: 60
+      max_tokens: 32768
   - model_name: "local-cpp-qwen25-coder-32b" # "huggingface/unsloth/Qwen2.5-Coder-32B-Instruct-GGUF"
     litellm_params:
       model: "openai/cpp-unsloth--Qwen2.5-Coder-32B-Instruct-GGUF"  #openai/Qwen2.5-Coder-32B
-      api_base: http://pod-llama-cpp-swap:8686/v1
+      api_base: http://pod-llama-swap:8686/v1
       api_key: "your-llamacpp-api-key"   # if --api-key flag is passed to LLaMA.cpp's HTTP Server
       num_retries: 1
       rpm: 600
+      max_tokens: 32768
 
   - model_name: "local-exllamav2-qwq-32b"
     litellm_params:
@@ -20,6 +22,7 @@ model_list:
       api_key: "your-tabby-api-key"
       num_retries: 1
       rpm: 60
+      max_tokens: 32768
       top_p: 0.95
       top_k: 40
       min_p: 0.01
@@ -36,6 +39,7 @@ model_list:
       api_key: "your-tabby-api-key"
       num_retries: 1
       rpm: 60
+      max_tokens: 32768
       top_p: 0.95
       top_k: 40
       min_p: 0.01
@@ -51,6 +55,7 @@ model_list:
       api_key: "your-vllm-api-key"
       num_retries: 1
       rpm: 60
+      max_tokens: 32768
 
 general_settings:
   master_key: sk-deadbeef0badcafe

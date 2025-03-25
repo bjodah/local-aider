@@ -117,3 +117,14 @@ models:
     proxy: "http://127.0.0.1:9503"
       ```
   Better than tabbyAPI configured with litellm.yml? I don't know.
+- This whole litellm proxy thing + llama-swap is complicated, simply
+  overriding a few environment variables is probably enough, and let
+  the backend handle loading/unloadaing of models, [e.g.](https://www.reddit.com/r/LocalLLaMA/comments/1jhfz4n/comment/mj71dx3/):
+  ```
+export OPENAI_API_BASE=http://<local-server:port>
+export OPENAI_API_KEY="LAN"    #required even if your server does no authentication.
+export AIDER_MAX_CHAT_HISTORY_TOKENS=131072
+export AIDER_MAP_TOKENS=8192
+export AIDER_TIMEOUT=<embarrassingly large int>
+export AIDER_STREAM=False #To fix data: problem.
+```

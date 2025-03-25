@@ -37,4 +37,11 @@ set -x
 # to infinite recursion. You can test this by either:
 #   - editing ../env-litellm-patched/host-litellm.py
 #   - or, change the endpoint to point directly at llama-swap (port 8686)
-query_completions "${1:-local-qwq-32b}" "Answer succinctly by completing the sentence: The capital of France is"
+echo $#
+query_completions "${1:-local-cpp-qwen25-coder-32b}" "Answer succinctly by completing the sentence: The capital of France is"
+# query_completions "${1:-local-cpp-qwq-32b}" "Answer succinctly by completing the sentence: The capital of France is"
+ # "local-cpp-qwq-32b"
+ # "local-cpp-qwen25-coder-32b"
+ # "local-exllamav2-qwq-32b"
+ # "local-exllamav2-qwen25-coder-32b"
+ # "local-vllm-qwq-32b"

@@ -17,7 +17,7 @@ services:
       - ./tabby-api_tokens.yml:/api_tokens.yml
       - ./tabby-config-qwq32b.yml:/opt/tabby-config-qwq32b.yml
       - ./tabby-config-qwen25-coder.yml:/opt/tabby-config-qwen25-coder.yml
-    working_dir: "/"      
+    working_dir: "/"
     security_opt:
       - label:disable
     environment:
