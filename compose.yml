@@ -19,10 +19,26 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - HUGGING_FACE_HUB_TOKEN
     ipc: host
-    entrypoint:
-      /usr/local/bin/llama-swap
+    entrypoint: ["echo", "Service temporarily disabled"]
+#      /usr/local/bin/llama-swap
     command:
       -config /root/llama-swap-config.yaml -listen ':8686'
+
+  pod-tabbyapi:
+    image: ghcr.io/theroyallab/tabbyapi:latest
+    ports:
+      - "5000:5000"
+    devices:
+      - "nvidia.com/gpu=all"
+    volumes:
+      - ${HOST_CACHE_HUGGINGFACE:-~/.cache/huggingface/hub}:/app/models
+      - ./tabby-api_tokens.yml:/app/api_tokens.yml
+      - ./tabby-config-qwq32b.yml:/app/config.yml
+    security_opt:
+      - label:disable
+    environment:
+      - NAME=TabbyAPI
+    ipc: host   
 
   pod-litellm-proxy:
     build:
