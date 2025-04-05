@@ -1,4 +1,4 @@
-logRequests: false
+logRequests: true
 
 # Qwen's QwQ 32B model is very sensitive to the settings used
 # the settings below are by no means definitive, and are taken
@@ -18,11 +18,11 @@ logRequests: false
 
 
 models:
-  unsloth--QwQ-32B-GGUF:
+  "cpp-unsloth--QwQ-32B-GGUF":
     cmd: >
-      /app/llama-server
+      /opt/llama.cpp/build/bin/llama-server
            --verbose
-           --port 8000
+           --port 8001
            --ctx-size 32768
            --n-gpu-layers 99 
            --seed "-1" 
@@ -40,20 +40,23 @@ models:
            --flash-attn
            --jinja
            --chat-template "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- messages[0]['content'] }}\n    {%- else %}\n        {{- '' }}\n    {%- endif %}\n    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}\n  {%- endif %}\n{%- endif %}\n{%- for message in messages %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) %}\n        {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" and not message.tool_calls %}\n        {%- set content = message.content %}\n        {%- if not loop.last %}\n            {%- set content = message.content.split('</think>')[-1].lstrip('\\n') %}\n        {%- endif %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set content = message.content %}\n        {%- if not loop.last %}\n            {%- set content = message.content.split('</think>')[-1].lstrip('\\n') %}\n        {%- endif %}\n        {{- '<|im_start|>' + message.role }}\n        {%- if message.content %}\n            {{- '\\n' + content }}\n        {%- endif %}\n        {%- for tool_call in message.tool_calls %}\n            {%- if tool_call.function is defined %}\n                {%- set tool_call = tool_call.function %}\n            {%- endif %}\n            {{- '\\n<tool_call>\\n{\"name\": \"' }}\n            {{- tool_call.name }}\n            {{- '\", \"arguments\": ' }}\n            {{- tool_call.arguments | tojson }}\n            {{- '}\\n</tool_call>' }}\n        {%- endfor %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- message.content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n<think>\\n' }}\n{%- endif %}\n"
-           -hf unsloth/QwQ-32B-GGUF:Q4_K_M
-    proxy: http://127.0.0.1:8000
+           --hf-repo unsloth/QwQ-32B-GGUF:Q4_K_M
+           --hf-repo-draft bartowski/InfiniAILab_QwQ-0.5B-GGUF:IQ4_XS
+           --override-kv tokenizer.ggml.bos_token_id=int:151643
+           #mradermacher/QwQ-0.5B-GGUF:IQ4_XS
+    proxy: http://127.0.0.1:8001
 
            # --jinja
            # --chat-template "$(cat $HOME/vc/castle/ai/unsloth-qwq-32b-chat-template-jinja.txt)"
 
     # unload model after XX seconds
-    ttl: 60
+    ttl: 3
 
-  unsloth--Qwen2.5-Coder-32B-Instruct-GGUF:
+  cpp-unsloth--Qwen2.5-Coder-32B-Instruct-GGUF:
     cmd: >
-      /app/llama-server
+      /opt/llama.cpp/build/bin/llama-server
            --verbose
-           --port 8000
+           --port 8002
            --threads 32 
            --ctx-size 32768 
            --n-gpu-layers 999 
@@ -68,9 +71,39 @@ models:
            --cache-type-k q4_0 
            --cache-type-v q4_0 
            --flash-attn
-           -hf unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
+           --hf-repo unsloth/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
+           --hf-repo-draft unsloth/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q4_K_M
 
-    proxy: http://127.0.0.1:8000
+    proxy: http://127.0.0.1:8002
 
     # unload model after XX seconds
-    ttl: 60
+    ttl: 3
+
+  exllamav2-bartowski-qwq-32b:
+    cmd: >-
+      python /opt/tabbyAPI/main.py --config /opt/tabby-config-qwq32b.yml
+    proxy: http://127.0.0.1:8003
+    ttl: 3
+
+  exllamav2-bartowski-qwen25-coder-32b:
+    cmd: >-
+      python /opt/tabbyAPI/main.py --config /opt/tabby-config-qwen25-coder-32b.yml
+    proxy: http://127.0.0.1:8004
+    ttl: 3
+
+  vllm-unsloth-qwq-32b-bnb:
+    cmd: >-
+      python3 -m vllm.entrypoints.openai.api_server
+      --api-key your-vllm-api-key
+      --port 8005
+      --model unsloth/QwQ-32B-unsloth-bnb-4bit
+      --gpu-memory-utilization 0.96
+      --max-model-len 12250
+      --kv-cache-dtype fp8_e5m2
+      --max-num-seqs 1
+      --tensor-parallel-size 1
+      --enforce-eager
+
+    proxy: http://127.0.0.1:8005
+
+    ttl: 3
