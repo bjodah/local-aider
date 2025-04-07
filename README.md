@@ -1,4 +1,10 @@
 # local-aider
+UPDATE 2025-04-07: Please take a look at [llama-swap's example](https://github.com/mostlygeek/llama-swap/tree/main/examples/aider-qwq-coder)
+for a better approach to this. I have since changed my approach by not relying on litellm_proxy/ prefix, but instead highjacking the openai-base url
+(with the minor inconvenience that we need to restart aider if we actually want to connect to an openai model). My current setup using llama-swap is found
+here: https://github.com/bjodah/llm-multi-backend-container
+Original README follows:
+
 This repo is just an attempt to collect scripts and notes on how one
 can enable using [aider](https://aider.chat) with a local reasoning "architect" model (Qwen/QwQ-32B)
 and a non-reasoning "editor" model (Qwen/Qwen2.5-Coder-Instruct-32B)
